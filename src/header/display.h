@@ -1,5 +1,5 @@
-#include "battle_c.h"
+// #include "battle_c.h"
 
-void displayMapData(BC_List *mapObjects);
-void displayMap(BC_List *mapObjects);
-void displayPlayerData(BC_PlayerData playerData);
+// void displayMapDataObjects(BC_List *mapObjects);
+// // void displayMap(BC_List *mapObjects);
+// // void displayPlayerData(BC_PlayerData playerData);
