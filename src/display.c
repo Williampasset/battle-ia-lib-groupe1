@@ -17,8 +17,16 @@ void displayMapDataObjects(BC_List *mapObjects) {
     } while (((mapObjects = bc_ll_next(mapObjects)) != NULL));
 }
 
+<<<<<<< HEAD
 // void displayMap(BC_List *mapObjects){
 //     // Display the map
 //     printf("Map:\n");
     
 // }
+=======
+void displayMap(BC_List *mapObjects){
+    // Display the map
+    printf("Map:\n");
+    
+}
+>>>>>>> ebe6d1b (modify display files)
