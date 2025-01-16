@@ -19,3 +19,4 @@ void displayMap(BC_List *mapObjects, BC_WorldInfo world_info) {
       }
       printf("\n");
   }   
+}
