@@ -23,8 +23,8 @@ void displayMap(BC_List *mapObjects, BC_WorldInfo world_info) {
 =======
 #include "header/display.h"
 
-void displayMap(BC_List *mapObjects) {
-    // Display the map
+void displayMapDataObjects(BC_List *mapObjects) {
+    // Display the map data
     printf("Map:\n");
     do {
         BC_MapObject *map_object = (BC_MapObject *)bc_ll_value(mapObjects);
@@ -39,4 +39,10 @@ void displayMap(BC_List *mapObjects) {
 
     } while (((mapObjects = bc_ll_next(mapObjects)) != NULL));
 >>>>>>> 1416786 (add display files)
+}
+
+void displayMap(BC_List *mapObjects){
+    // Display the map
+    printf("Map:\n");
+    
 }
