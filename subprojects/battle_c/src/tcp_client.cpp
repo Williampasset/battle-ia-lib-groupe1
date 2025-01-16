@@ -85,6 +85,7 @@ void TCPClient::Connect(std::string host, uint16_t port) {
   this->socket = boost::asio::ip::tcp::socket(io_context);
 
   boost::asio::connect(this->socket.value(), endpoints);
+  this->is_running_ = true;
   this->connection_thread_ = std::thread(&TCPClient::Handle, this);
   this->send_thread_ = std::thread(&TCPClient::SendQueue, this);
 }

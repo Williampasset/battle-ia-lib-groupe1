@@ -12,10 +12,6 @@ BC_Connection *bc_connect(const char *host, int port) {
 
     // Attempt to connect
     client->Connect(std::string(host), port);
-    {
-      using namespace std::chrono_literals;
-      std::this_thread::sleep_for(1s);
-    }
 
     // Send initial client message
     {
