@@ -2,4 +2,4 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-void displayMapDataObjects(BC_List *mapObjects);
+void displayMap(BC_List *mapObjects, BC_WorldInfo world_info);
