@@ -59,7 +59,5 @@ int main(int argc, char *argv[]) {
 
   // displayMapDataObjects(list);
 
-  displayMap(list, world_info);
-
   return EXIT_SUCCESS;
 }

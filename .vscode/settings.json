@@ -5,6 +5,7 @@
         "*.embeddedhtml": "html",
         "display.h": "c",
         "stdlib.h": "c",
-        "battle_c.h": "c"
+        "battle_c.h": "c",
+        "cstdlib": "c"
     }
 }
