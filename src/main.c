@@ -1,9 +1,13 @@
 #include "stdio.h"
 #include "stdlib.h"
+<<<<<<< HEAD
 #include "battle_c.h"
 #include "display.h"
 
 
+=======
+#include "header/display.h"
+>>>>>>> 1416786 (add display files)
 
 int main(int argc, char *argv[]) {
 
@@ -22,9 +26,15 @@ int main(int argc, char *argv[]) {
          (int)world_info.player_count, world_info.auto_shoot_enabled,
          world_info.radar_enabled);
 
+<<<<<<< HEAD
   // displayMapDataObjects(list);
 
   displayMap(list, world_info);
+=======
+
+  displayMap(list);
+  bc_disconnect(conn);
+>>>>>>> 1416786 (add display files)
 
   return EXIT_SUCCESS;
 }
