@@ -1,11 +1,6 @@
 {
     "files.associations": {
-        "*.ndjson": "jsonl",
-        "*.dbclient-js": "javascript",
-        "*.embeddedhtml": "html",
         "display.h": "c",
-        "stdlib.h": "c",
-        "battle_c.h": "c",
-        "cstdlib": "c"
+        "stdlib.h": "c"
     }
 }
