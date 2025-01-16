@@ -22,4 +22,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+<<<<<<< HEAD
 echo "Container $IMAGE_NAME ran successfully."
+=======
+echo "Container $IMAGE_NAME ran successfully."
+>>>>>>> upstream/main
