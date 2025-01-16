@@ -9,8 +9,8 @@ battle_c_dep = battle_c_subproject.get_variable('battle_c_dep')# Create the exec
 
 executable_sources = ['./src/main.c']
 
-#inc_dir = include_directories('/usr/local/include')
-include_dir = include_directories('./include')
+inc_dir = include_directories('/usr/local/include')
+#include_dir = include_directories('./include')
 
 executable(
   'battle_c_bot',
