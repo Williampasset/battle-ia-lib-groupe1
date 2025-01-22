@@ -164,6 +164,8 @@ void *bc_ll_value(BC_List *linked_list) {
   return (void *)(((LinkedList *)linked_list)->Value());
 }
 
+void bc_ll_free(BC_List *linked_list) { auto ll = (LinkedList *)linked_list; }
+
 void bc_set_game_ended_handler(
     BC_Connection *connection,
     void (*game_ended_handler)(BC_PlayerData player_data)) {
