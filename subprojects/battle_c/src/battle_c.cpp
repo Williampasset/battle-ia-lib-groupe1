@@ -114,6 +114,10 @@ BC_ShootResult bc_shoot(BC_Connection *connection, double angle) {
     result.target_destroyed = shoot_result.target_destroyed();
   }
 
+  if (shoot_result.has_fail_reason()) {
+    result.fail_reason = (BC_ShootResultFailReason)shoot_result.fail_reason();
+  }
+
   return result;
 }
 

@@ -77,11 +77,18 @@ message PlayersSighted {
   repeated PlayerData players = 2;
 }
 
+enum ShootFailReason {
+  UNKNOWN = 0;
+  COOLDOWN = 1;
+  MISS = 2;
+}
+
 message ShootResult {
   bool success = 1;
   optional uint64 target_id = 2;
   optional uint64 damage_points = 3;
   optional bool target_destroyed = 4;
+  optional ShootFailReason fail_reason = 5;
 }
 
 enum GameEndedReason {
