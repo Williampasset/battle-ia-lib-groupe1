@@ -21,15 +21,14 @@ typedef struct BC_List_ {
 } BC_List;
 
 typedef struct BC_Vector3_ {
-  int x;
-  int y;
-  int z;
+  double x;
+  double y;
+  double z;
 } BC_Vector3;
 
 typedef struct BC_Vector2_ {
-  int x;
-  int y;
-  int z;
+  double x;
+  double y;
 } BC_Vector2;
 
 enum BC_ObjectType { OT_PLAYER, OT_WALL, OT_BOOST };
