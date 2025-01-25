@@ -2,4 +2,5 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-void displayMap(BC_List *mapObjects, BC_WorldInfo world_info);
+void displayRadarData(BC_List *radarData);
+void displayMapData(BC_WorldInfo world_info);

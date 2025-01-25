@@ -13,6 +13,8 @@
         "span": "c",
         "vector": "c",
         "xstring": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "list": "c",
+        "battle_c.h": "c"
     }
 }
