@@ -10,21 +10,21 @@
 
 void TCPClient::Handle() {
   while (this->is_running_) {
-    uint8_t magic;
     uint32_t message_size;
-    size_t len;
-    boost::system::error_code error;
+    uint32_t len = 0;
 
-    len = socket.value().read_some(
-        boost::asio::buffer(&message_size, sizeof(message_size)), error);
-
-    if (error == boost::asio::error::eof)
-      break;
-    else if (error)
-      throw boost::system::system_error(error);
+    boost::asio::read(socket.value(),
+                      boost::asio::buffer(&message_size, sizeof(message_size)),
+                      4);
 
     std::vector<uint8_t> buffer(message_size);
-    socket.value().read_some(boost::asio::buffer(buffer), error);
+
+    len = boost::asio::read(socket.value(), boost::asio::buffer(buffer),
+                            message_size);
+    if (len != message_size) {
+      std::cerr << "Buffer underrun, read = " << len
+                << ", expected = " << message_size << std::endl;
+    }
     try {
       ServerClientMessage message;
       message.ParseFromArray(buffer.data(), buffer.size());
