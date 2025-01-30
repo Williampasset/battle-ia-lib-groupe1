@@ -4,6 +4,7 @@
 #include "unistd.h"
 #include "battle_c.h"
 #include "display.h"
+#include "radar.h"
 
 #define SPEED 5
 #define DELAY 100000
@@ -21,7 +22,22 @@ int main(int argc, char *argv[])
     int direction = 1;
 
     while (true) {
-        data = bc_get_player_data(conn);
+        // BC_List *list = bc_radar_ping(conn);
+        // RadarObject *storedObjects = displayAndStoreRadarData(list);
+
+        // RadarObject *current = storedObjects;
+        // while (current != NULL) {
+        //     if (current->type == 2) {
+        //         double dx = current->x - data.position.x;
+        //         double dy = current->y - data.position.y;
+        //         double fire_angle = atan2(dy, dx) * (180 / M_PI);
+        //         bc_shoot(conn, fire_angle);
+        //     }
+
+        //     current = current->next;
+        // }
+
+        // freeRadarObjects(storedObjects);
 
         if (data.position.x <= 20) {
             direction = 1; 
@@ -34,7 +50,7 @@ int main(int argc, char *argv[])
         double vx = cos(angle / 10);
         double vy = direction * SPEED * sin(angle / 10);
 
-        bc_set_speed(conn, 1, vy, 0);
+        bc_set_speed(conn, vx, vy, 0);
 
         angle += 1;
 

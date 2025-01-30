@@ -15,7 +15,9 @@
         "xstring": "c",
         "xutility": "c",
         "list": "c",
-        "battle_c.h": "c"
+        "battle_c.h": "c",
+        "cstddef": "cpp",
+        "radar.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

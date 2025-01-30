@@ -2,18 +2,28 @@
 
 void displayRadarData(BC_List *radarData)
 {
-    printf("Radar data: \n");
-    do
+    if (radarData == NULL) {
+        printf("Radar data: empty\n");
+        return;
+    }
+
+    printf("Radar data:\n");
+
+    while (radarData != NULL)
     {
         BC_MapObject *map_object = (BC_MapObject *)bc_ll_value(radarData);
-        printf("map_object x = %d, y = %d\n", map_object->position.x,
-               map_object->position.y);
-        printf("map_object type = %d, id = %d, health = %d \n", map_object->type,
-               map_object->id, map_object->health);
+        if (map_object != NULL) {
+            printf("map_object x = %d, y = %d\n", map_object->position.x, map_object->position.y);
+            printf("map_object type = %d, id = %d, health = %d \n",
+                   map_object->type, map_object->id, map_object->health);
+        }
+        
+        radarData = bc_ll_next(radarData);
+    }
 
-    } while (((radarData = bc_ll_next(radarData)) != NULL));
-    printf('\n');
+    printf("\n");
 }
+
 
 void displayMapData(BC_WorldInfo world_info)
 {
