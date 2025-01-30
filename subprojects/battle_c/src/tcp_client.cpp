@@ -14,13 +14,11 @@ void TCPClient::Handle() {
     uint32_t len = 0;
 
     boost::asio::read(socket.value(),
-                      boost::asio::buffer(&message_size, sizeof(message_size)),
-                      4);
+                      boost::asio::buffer(&message_size, sizeof(message_size)));
 
     std::vector<uint8_t> buffer(message_size);
 
-    len = boost::asio::read(socket.value(), boost::asio::buffer(buffer),
-                            message_size);
+    len = boost::asio::read(socket.value(), boost::asio::buffer(buffer));
     if (len != message_size) {
       std::cerr << "Buffer underrun, read = " << len
                 << ", expected = " << message_size << std::endl;
