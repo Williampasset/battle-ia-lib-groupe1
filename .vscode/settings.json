@@ -7,6 +7,10 @@
         "display.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "radar.h": "c",
+        "battle_c.h": "c",
+        "list": "c",
+        "cmath": "cpp"
     }
 }

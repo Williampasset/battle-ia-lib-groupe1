@@ -7,7 +7,7 @@ project('battle_c_bot', ['c', 'cpp'],
 battle_c_subproject = subproject('battle_c')
 battle_c_dep = battle_c_subproject.get_variable('battle_c_dep')# Create the executable
 
-executable_sources = ['./src/main.c', './src/display.c']
+executable_sources = ['./src/main.c', './src/radar.c', './src/shoot.c', './src/utils.c']
 
 include_dir = include_directories('./include')
 
