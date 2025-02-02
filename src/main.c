@@ -9,6 +9,10 @@
 #define SPEED 5
 #define DELAY 100000
 #define FIRE_RATE 5
+#define MAP_MIN_X 0
+#define MAP_MAX_X 100
+#define MAP_MIN_Y 0
+#define MAP_MAX_Y 100
 
 int main(int argc, char *argv[])
 {
@@ -19,43 +23,26 @@ int main(int argc, char *argv[])
 
     double angle = 0;
     int counter = 0;
-    int direction = 1;
 
     while (true) {
-        // BC_List *list = bc_radar_ping(conn);
-        // RadarObject *storedObjects = displayAndStoreRadarData(list);
+        data = bc_get_player_data(conn);
 
-        // RadarObject *current = storedObjects;
-        // while (current != NULL) {
-        //     if (current->type == 2) {
-        //         double dx = current->x - data.position.x;
-        //         double dy = current->y - data.position.y;
-        //         double fire_angle = atan2(dy, dx) * (180 / M_PI);
-        //         bc_shoot(conn, fire_angle);
-        //     }
+        angle = rand() % 360;
 
-        //     current = current->next;
-        // }
+        double vx = cos(angle) * SPEED * 2;
+        double vy = sin(angle * M_PI / 180) * SPEED * 2;
 
-        // freeRadarObjects(storedObjects);
-
-        if (data.position.x <= 20) {
-            direction = 1; 
-            angle = 0;
-        } else if (data.position.x >= 80) {
-            direction = -1;
-            angle = 0;      
+        if (data.position.x + vx < MAP_MIN_X || data.position.x + vx > MAP_MAX_X) {
+            vx = -vx;
         }
-
-        double vx = cos(angle / 10);
-        double vy = direction * SPEED * sin(angle / 10);
+        if (data.position.y + vy < MAP_MIN_Y || data.position.y + vy > MAP_MAX_Y) {
+            vy = -vy;
+        }
 
         bc_set_speed(conn, vx, vy, 0);
 
-        angle += 1;
-
         if (counter % FIRE_RATE == 0) {
-            double fire_angle = angle * 180 / (M_PI * 10);
+            double fire_angle = angle;
             bc_shoot(conn, fire_angle);
         }
 
