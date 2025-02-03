@@ -11,6 +11,7 @@
         "radar.h": "c",
         "battle_c.h": "c",
         "list": "c",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "xutility": "c"
     }
 }

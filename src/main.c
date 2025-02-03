@@ -1,4 +1,7 @@
 #include "main.h"
+#include "unistd.h"
+
+#define DELAY 300000
 
 int main(int argc, char *argv[])
 {
@@ -15,13 +18,27 @@ int main(int argc, char *argv[])
 
     update_radar_data(conn, &radar_data);
 
-    print_radar_data(&radar_data);
+    //print_radar_data(&radar_data);
+
+    double angle = 0;
+    int lastping = time();
 
     while(!data.is_dead){
         data = bc_get_player_data(conn);
-        update_radar_data(conn, &radar_data);
+        angle = rand() % 360;
+
+        double vx = cos(angle) * SPEED * 2;
+        double vy = sin(angle * M_PI / 180) * SPEED * 2;
+
+        bc_set_speed(conn, vx, vy, 0);
+
+        if(time() - lastping > 1){
+            lastping = time();
+            update_radar_data(conn, &radar_data);
+        }
 
         sort_players_by_distance(data.position, &radar_data);
+        sort_bonuses_by_distance(data.position, &radar_data);
 
         for(int i = 0; i < radar_data.players_count; i++){
             BC_MapObject *player = radar_data.players[i];
@@ -32,7 +49,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        //usleep(100000);
+        usleep(DELAY);
     }
     
     bc_disconnect(conn);

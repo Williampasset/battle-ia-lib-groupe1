@@ -15,8 +15,6 @@ void update_radar_data(BC_Connection *conn, RadarData *radar_data) {
 
             //Pour les joueurs
             case 0:
-                if(obj->health == 0)
-                    break;
                 radar_data->players = realloc(radar_data->players, (radar_data->players_count + 1) * sizeof(BC_MapObject *));
                 radar_data->players[radar_data->players_count++] = obj;
                 break;
@@ -49,11 +47,11 @@ void print_radar_data(RadarData *radar_data) {
         printf("Player %d: %d\n", obj->id, obj->health);
     }
 
-    printf("Obstacles:\n");
-    for (int i = 0; i < radar_data->obstacles_count; i++) {
-        BC_MapObject *obj = radar_data->obstacles[i];
-        printf("Obstacle %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
-    }
+    // printf("Obstacles:\n");
+    // for (int i = 0; i < radar_data->obstacles_count; i++) {
+    //     BC_MapObject *obj = radar_data->obstacles[i];
+    //     printf("Obstacle %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
+    // }
 
     printf("Bonuses:\n");
     for (int i = 0; i < radar_data->bonuses_count; i++) {
@@ -84,6 +82,21 @@ void sort_players_by_distance(BC_Vector3 robot_pos, RadarData *radar_data) {
                 BC_MapObject *tmp = radar_data->players[i];
                 radar_data->players[i] = radar_data->players[j];
                 radar_data->players[j] = tmp;
+            }
+        }
+    }
+}
+
+void sort_bonuses_by_distance(BC_Vector3 robot_pos, RadarData *radar_data){
+    for (int i = 0; i < radar_data->bonuses_count; i++) {
+        for (int j = i + 1; j < radar_data->bonuses_count; j++) {
+            double distance1 = calculate_distance(robot_pos, radar_data->bonuses[i]->position);
+            double distance2 = calculate_distance(robot_pos, radar_data->bonuses[j]->position);
+
+            if (distance1 > distance2) {
+                BC_MapObject *tmp = radar_data->bonuses[i];
+                radar_data->bonuses[i] = radar_data->bonuses[j];
+                radar_data->bonuses[j] = tmp;
             }
         }
     }
