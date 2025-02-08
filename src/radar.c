@@ -1,57 +1,103 @@
-#include "radar.h"
+ #include "radar.h"
 
-RadarObject *addRadarObject(RadarObject *head, BC_MapObject *map_object) {
-    RadarObject *new_obj = (RadarObject *)malloc(sizeof(RadarObject));
-    if (new_obj == NULL) {
-        printf("Erreur d'allocation mémoire\n");
-        return head;
-    }
 
-    new_obj->x = map_object->position.x;
-    new_obj->y = map_object->position.y;
-    new_obj->speed_x = map_object->speed.x;
-    new_obj->speed_y = map_object->speed.y;
-    new_obj->type = map_object->type;
-    new_obj->id = map_object->id;
-    new_obj->health = map_object->health;
-    new_obj->next = head;
+void update_radar_data(BC_Connection *conn, RadarData *radar_data) {
+    BC_List *list = bc_radar_ping(conn);
 
-    return new_obj;
-}
+    radar_data->players_count = 0;
+    radar_data->obstacles_count = 0;
+    radar_data->bonuses_count = 0;
 
-RadarObject *displayAndStoreRadarData(BC_List *radarData) {
-    RadarObject *head = NULL;
+    while (list) {
+        BC_MapObject *obj = (BC_MapObject *)bc_ll_value(list);
+        
+        switch (obj->type) {
 
-    if (radarData == NULL) {
-        printf("Radar data: empty\n");
-        return NULL;
-    }
+            //Pour les joueurs
+            case 0:
+                radar_data->players = realloc(radar_data->players, (radar_data->players_count + 1) * sizeof(BC_MapObject *));
+                radar_data->players[radar_data->players_count++] = obj;
+                break;
 
-    //printf("Radar data:\n");
+            //Pour les obstacles
+            case 1:
+                if(obj->position.x == 1 || obj->position.x == 99 || obj->position.y == 1 || obj->position.y == 99)
+                    break;
+                radar_data->obstacles = realloc(radar_data->obstacles, (radar_data->obstacles_count + 1) * sizeof(BC_MapObject *));
+                radar_data->obstacles[radar_data->obstacles_count++] = obj;
+                break;
 
-    while (radarData != NULL) {
-        BC_MapObject *map_object = (BC_MapObject *)bc_ll_value(radarData);
-        if (map_object != NULL) {
-            //printf("Objet détecté → x = %.2f, y = %.2f\n", map_object->position.x, map_object->position.y);
-            //printf("Type = %d, ID = %d, Santé = %d \n", map_object->type, map_object->id, map_object->health);
-            //printf("Vitesse → vx = %.2f, vy = %.2f\n", map_object->speed.x, map_object->speed.y);
-
-            head = addRadarObject(head, map_object);
+            //Pour les bonus
+            case 2:
+                radar_data->bonuses = realloc(radar_data->bonuses, (radar_data->bonuses_count + 1) * sizeof(BC_MapObject *));
+                radar_data->bonuses[radar_data->bonuses_count++] = obj;
+                break;
         }
-
-        radarData = bc_ll_next(radarData);
+        list = bc_ll_next(list);
     }
-
-    //printf("\nFin de l'analyse radar.\n");
-    return head;
 }
 
-void freeRadarObjects(RadarObject **head) {
-    RadarObject *tmp;
-    while (*head != NULL) {
-        tmp = *head;
-        *head = (*head)->next;
-        free(tmp);
+
+void print_radar_data(RadarData *radar_data) {
+    printf("Players:\n");
+    for (int i = 0; i < radar_data->players_count; i++) {
+        BC_MapObject *obj = radar_data->players[i];
+        printf("Player %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
+        printf("Player %d: (%f, %f, %f)\n", obj->id, obj->speed.x, obj->speed.y, obj->speed.z);
+        printf("Player %d: %d\n", obj->id, obj->health);
     }
-    *head = NULL;
+
+    // printf("Obstacles:\n");
+    // for (int i = 0; i < radar_data->obstacles_count; i++) {
+    //     BC_MapObject *obj = radar_data->obstacles[i];
+    //     printf("Obstacle %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
+    // }
+
+    printf("Bonuses:\n");
+    for (int i = 0; i < radar_data->bonuses_count; i++) {
+        BC_MapObject *obj = radar_data->bonuses[i];
+        printf("Bonus %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
+    }
+}
+
+void free_radar_data(RadarData *radar_data) {
+    free(radar_data->players);
+    free(radar_data->obstacles);
+    free(radar_data->bonuses);
+    radar_data->players = NULL;
+    radar_data->obstacles = NULL;
+    radar_data->bonuses = NULL;
+    radar_data->players_count = 0;
+    radar_data->obstacles_count = 0;
+    radar_data->bonuses_count = 0;
+}
+
+void sort_players_by_distance(BC_Vector3 robot_pos, RadarData *radar_data) {
+    for (int i = 0; i < radar_data->players_count; i++) {
+        for (int j = i + 1; j < radar_data->players_count; j++) {
+            double distance1 = calculate_distance(robot_pos, radar_data->players[i]->position);
+            double distance2 = calculate_distance(robot_pos, radar_data->players[j]->position);
+
+            if (distance1 > distance2) {
+                BC_MapObject *tmp = radar_data->players[i];
+                radar_data->players[i] = radar_data->players[j];
+                radar_data->players[j] = tmp;
+            }
+        }
+    }
+}
+
+void sort_bonuses_by_distance(BC_Vector3 robot_pos, RadarData *radar_data){
+    for (int i = 0; i < radar_data->bonuses_count; i++) {
+        for (int j = i + 1; j < radar_data->bonuses_count; j++) {
+            double distance1 = calculate_distance(robot_pos, radar_data->bonuses[i]->position);
+            double distance2 = calculate_distance(robot_pos, radar_data->bonuses[j]->position);
+
+            if (distance1 > distance2) {
+                BC_MapObject *tmp = radar_data->bonuses[i];
+                radar_data->bonuses[i] = radar_data->bonuses[j];
+                radar_data->bonuses[j] = tmp;
+            }
+        }
+    }
 }

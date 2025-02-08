@@ -1,19 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef RADAR_H
+#define RADAR_H
+
+#include "utils.h"
 #include "battle_c.h"
 
-// typedef struct RadarObject {
-//     double x, y;
-//     double speed_x, speed_y;
-//     int type, id, health;
-//     struct RadarObject *next;
-// } RadarObject;
+typedef struct RadarData_ {
+    BC_MapObject **players;
+    BC_MapObject **obstacles;
+    BC_MapObject **bonuses;
+    int players_count;
+    int obstacles_count;
+    int bonuses_count;
+} RadarData;
 
-typedef struct PlayerDataObject {
-    double position_x, position_y;
-    double speed_x, speed_y;
-    int id, health, score, armor;
-    bool is_shootable = true;
-}
+void update_radar_data(BC_Connection *conn, RadarData *radar_data);
+void print_radar_data(RadarData *radar_data);
+void free_radar_data(RadarData *radar_data);
 
-RadarObject
+void sort_players_by_distance(BC_Vector3 robot_pos, RadarData *radar_data);
+void sort_bonuses_by_distance(BC_Vector3 robot_pos, RadarData *radar_data);
+
+
+#endif
