@@ -1,6 +1,7 @@
 #include "radar.h"
 #include <float.h>
 #include <math.h>
+#include "debug.h"
 #define SPEED 1.0
 #define OBSTACLE_THRESHOLD 1.0
 
@@ -43,25 +44,17 @@ void update_radar_data(BC_Connection *conn, RadarData *radar_data) {
 
 
 void print_radar_data(RadarData *radar_data) {
-    printf("Players:\n");
+    DEBUG_PRINT(("Players:\n"));
     for (int i = 0; i < radar_data->players_count; i++) {
         BC_MapObject *obj = radar_data->players[i];
-        printf("Player %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
-        printf("Player %d: (%f, %f, %f)\n", obj->id, obj->speed.x, obj->speed.y, obj->speed.z);
-        printf("Player %d: %d\n", obj->id, obj->health);
+        DEBUG_PRINT(("Player %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z));
+        DEBUG_PRINT(("Player %d: (%f, %f, %f)\n", obj->id, obj->speed.x, obj->speed.y, obj->speed.z));
+        DEBUG_PRINT(("Player %d: %d\n", obj->id, obj->health));
     }
-
-    // printf("Obstacles:\n");
-    // for (int i = 0; i < radar_data->obstacles_count; i++) {
-    //     BC_MapObject *obj = radar_data->obstacles[i];
-    //     printf("Obstacle %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
-    // }
-
-    printf("Bonuses:\n");
+    DEBUG_PRINT(("BONUS:\n"));
     for (int i = 0; i < radar_data->bonuses_count; i++) {
         BC_MapObject *obj = radar_data->bonuses[i];
-        printf("Bonus %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z);
-    }
+        DEBUG_PRINT(("Bonus %d: (%f, %f, %f)\n", obj->id, obj->position.x, obj->position.y, obj->position.z));}
 }
 
 void free_radar_data(RadarData *radar_data) {
@@ -144,7 +137,7 @@ int is_position_blocked(BC_Vector3 position, RadarData *radar_data) {
 void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos, RadarData *radar_data) {
     BC_MapObject *closest_boost = find_closest_boost(conn, robot_pos);
     if (closest_boost != NULL) {
-        printf("Closest boost found at: (%f, %f, %f)\n", closest_boost->position.x, closest_boost->position.y, closest_boost->position.z);
+        DEBUG_PRINT(("Closest boost found at: (%f, %f, %f)\n", closest_boost->position.x, closest_boost->position.y, closest_boost->position.z));
         double dx = closest_boost->position.x - robot_pos.x;
         double dy = closest_boost->position.y - robot_pos.y;
         double angle_to_boost = atan2(dy, dx) * 180 / M_PI;
@@ -156,7 +149,7 @@ void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos, Radar
 
         // Vérifier si la nouvelle position est bloquée par un obstacle
         if (is_position_blocked(new_position, radar_data)) {
-            printf("Blocked by obstacle\n");
+            DEBUG_PRINT(("Position blocked by obstacle\n"));
             double angle = rand() % 360;
             vx = cos(angle * M_PI / 180) * SPEED * 2;
             vy = sin(angle * M_PI / 180) * SPEED * 2;
