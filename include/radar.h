@@ -20,7 +20,7 @@ void free_radar_data(RadarData *radar_data);
 void sort_players_by_distance(BC_Vector3 robot_pos, RadarData *radar_data);
 void sort_bonuses_by_distance(BC_Vector3 robot_pos, RadarData *radar_data);
 BC_MapObject *find_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos);
-void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos);
-
+void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos, RadarData *radar_data);
+int is_position_blocked(BC_Vector3 pos, RadarData *radar_data);
 
 #endif

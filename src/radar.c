@@ -2,6 +2,7 @@
 #include <float.h>
 #include <math.h>
 #define SPEED 1.0
+#define OBSTACLE_THRESHOLD 1.0
 
 
 void update_radar_data(BC_Connection *conn, RadarData *radar_data) {
@@ -129,12 +130,21 @@ BC_MapObject *find_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos) {
     return closest_boost;
 }
 
-void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos) {
+int is_position_blocked(BC_Vector3 position, RadarData *radar_data) {
+    for (int i = 0; i < radar_data->obstacles_count; i++) {
+        BC_MapObject *obstacle = radar_data->obstacles[i];
+        double distance = calculate_distance(position, obstacle->position);
+        if (distance < OBSTACLE_THRESHOLD) { // NEAR 1.0 METER OF OBSTACLE
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos, RadarData *radar_data) {
     BC_MapObject *closest_boost = find_closest_boost(conn, robot_pos);
     if (closest_boost != NULL) {
         printf("Closest boost found at: (%f, %f, %f)\n", closest_boost->position.x, closest_boost->position.y, closest_boost->position.z);
-        
-        // Calculer l'angle vers le boost le plus proche
         double dx = closest_boost->position.x - robot_pos.x;
         double dy = closest_boost->position.y - robot_pos.y;
         double angle_to_boost = atan2(dy, dx) * 180 / M_PI;
@@ -142,9 +152,18 @@ void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos) {
         // Mettre à jour la vitesse pour se diriger vers le boost
         double vx = cos(angle_to_boost * M_PI / 180) * SPEED * 2;
         double vy = sin(angle_to_boost * M_PI / 180) * SPEED * 2;
+        BC_Vector3 new_position = {robot_pos.x + vx, robot_pos.y + vy, robot_pos.z};
+
+        // Vérifier si la nouvelle position est bloquée par un obstacle
+        if (is_position_blocked(new_position, radar_data)) {
+            printf("Blocked by obstacle\n");
+            double angle = rand() % 360;
+            vx = cos(angle * M_PI / 180) * SPEED * 2;
+            vy = sin(angle * M_PI / 180) * SPEED * 2;
+        }
+
         bc_set_speed(conn, vx, vy, 0);
     } else {
-        // Si aucun boost n'est trouvé, continuer à se déplacer de manière aléatoire
         double angle = rand() % 360;
         double vx = cos(angle * M_PI / 180) * SPEED * 2;
         double vy = sin(angle * M_PI / 180) * SPEED * 2;

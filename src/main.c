@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         }
 
         // Appel de la fonction pour se diriger vers le boost le plus proche
-        move_towards_closest_boost(conn, data.position);
+        move_towards_closest_boost(conn, data.position, &radar_data);
 
         sort_players_by_distance(data.position, &radar_data);
         sort_bonuses_by_distance(data.position, &radar_data);
