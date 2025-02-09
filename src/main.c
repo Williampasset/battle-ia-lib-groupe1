@@ -4,7 +4,7 @@
 #include <time.h>
 #include <math.h>
 #include <float.h>
-#include <pthread.h> // Pour les threads
+#include <pthread.h>
 
 #define SPEED 1.0
 #define DELAY 300000
@@ -63,8 +63,6 @@ int main(int argc, char *argv[])
     RadarData radar_data = {NULL, NULL, NULL, 0, 0, 0};
 
     update_radar_data(conn, &radar_data);
-
-    //print_radar_data(&radar_data);
 
     double angle = 0;
     int lastping = time(NULL);

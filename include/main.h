@@ -9,5 +9,4 @@
 #include "utils.h"
 #include "move.h"
 
-
 #endif
