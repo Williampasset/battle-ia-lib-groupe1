@@ -1,5 +1,7 @@
 #include "main.h"
 #include "unistd.h"
+#include <time.h>
+
 
 #define DELAY 300000
 
@@ -21,7 +23,7 @@ int main(int argc, char *argv[])
     //print_radar_data(&radar_data);
 
     double angle = 0;
-    int lastping = time();
+    int lastping = time(NULL);
 
     while(!data.is_dead){
         data = bc_get_player_data(conn);
@@ -32,8 +34,8 @@ int main(int argc, char *argv[])
 
         bc_set_speed(conn, vx, vy, 0);
 
-        if(time() - lastping > 1){
-            lastping = time();
+        if(time(NULL) - lastping > 1){
+            lastping = time(NULL);
             update_radar_data(conn, &radar_data);
         }
 
