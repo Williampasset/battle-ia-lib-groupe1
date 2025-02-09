@@ -36,12 +36,11 @@ void *shooting_thread(void *args) {
     RadarData *radar_data = thread_args->radar_data;
 
     while (!data->is_dead) {
-        for (int i = 0; i < radar_data->players_count; i++) {
-            BC_MapObject *player = radar_data->players[i];
+        if(radar_data->players[1] != NULL) {
+            BC_MapObject *player = radar_data->players[1];
             if (is_shootable(data->position, player->position, radar_data)) {
                 double angle = calculate_angle(data->position, player->position);
                 bc_shoot(conn, angle);
-                break;
             }
         }
         usleep(DELAY);
