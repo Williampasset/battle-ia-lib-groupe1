@@ -34,6 +34,7 @@
         "tuple": "c",
         "type_traits": "c",
         "*.inc": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "time.h": "c"
     }
 }

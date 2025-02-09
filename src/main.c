@@ -1,13 +1,15 @@
 #include "main.h"
+#include "radar.h"
 #include "unistd.h"
 #include <time.h>
+#include <math.h>
+#include <float.h>
 
-
+#define SPEED 1.0
 #define DELAY 300000
 
 int main(int argc, char *argv[])
 {
-
     BC_Connection *conn = bc_connect("5.135.136.236", 8080);
 
     BC_WorldInfo world_info = bc_get_world_info(conn);
@@ -27,17 +29,14 @@ int main(int argc, char *argv[])
 
     while(!data.is_dead){
         data = bc_get_player_data(conn);
-        angle = rand() % 360;
-
-        double vx = cos(angle) * SPEED * 2;
-        double vy = sin(angle * M_PI / 180) * SPEED * 2;
-
-        bc_set_speed(conn, vx, vy, 0);
 
         if(time(NULL) - lastping > 1){
             lastping = time(NULL);
             update_radar_data(conn, &radar_data);
         }
+
+        // Appel de la fonction pour se diriger vers le boost le plus proche
+        move_towards_closest_boost(conn, data.position);
 
         sort_players_by_distance(data.position, &radar_data);
         sort_bonuses_by_distance(data.position, &radar_data);

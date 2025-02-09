@@ -1,4 +1,7 @@
- #include "radar.h"
+#include "radar.h"
+#include <float.h>
+#include <math.h>
+#define SPEED 1.0
 
 
 void update_radar_data(BC_Connection *conn, RadarData *radar_data) {
@@ -99,5 +102,52 @@ void sort_bonuses_by_distance(BC_Vector3 robot_pos, RadarData *radar_data){
                 radar_data->bonuses[j] = tmp;
             }
         }
+    }
+}
+
+BC_MapObject *find_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos) {
+    BC_List *list = bc_radar_ping(conn);
+    if (!list) {
+        return NULL;
+    }
+
+    BC_MapObject *closest_boost = NULL;
+    double min_distance = DBL_MAX;
+
+    while (list) {
+        BC_MapObject *obj = (BC_MapObject *)bc_ll_value(list);
+        if (obj->type == 2) { // Type 2 corresponds to bonuses
+            double distance = calculate_distance(robot_pos, obj->position);
+            if (distance < min_distance) {
+                min_distance = distance;
+                closest_boost = obj;
+            }
+        }
+        list = bc_ll_next(list);
+    }
+
+    return closest_boost;
+}
+
+void move_towards_closest_boost(BC_Connection *conn, BC_Vector3 robot_pos) {
+    BC_MapObject *closest_boost = find_closest_boost(conn, robot_pos);
+    if (closest_boost != NULL) {
+        printf("Closest boost found at: (%f, %f, %f)\n", closest_boost->position.x, closest_boost->position.y, closest_boost->position.z);
+        
+        // Calculer l'angle vers le boost le plus proche
+        double dx = closest_boost->position.x - robot_pos.x;
+        double dy = closest_boost->position.y - robot_pos.y;
+        double angle_to_boost = atan2(dy, dx) * 180 / M_PI;
+
+        // Mettre à jour la vitesse pour se diriger vers le boost
+        double vx = cos(angle_to_boost * M_PI / 180) * SPEED * 2;
+        double vy = sin(angle_to_boost * M_PI / 180) * SPEED * 2;
+        bc_set_speed(conn, vx, vy, 0);
+    } else {
+        // Si aucun boost n'est trouvé, continuer à se déplacer de manière aléatoire
+        double angle = rand() % 360;
+        double vx = cos(angle * M_PI / 180) * SPEED * 2;
+        double vy = sin(angle * M_PI / 180) * SPEED * 2;
+        bc_set_speed(conn, vx, vy, 0);
     }
 }
